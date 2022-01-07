@@ -47,3 +47,6 @@ def get_path(filename: str, extension: str):
     path = safe_join(files_directory,extension,filename)
 
     return path
+
+def zip_images():
+    ...

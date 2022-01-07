@@ -114,3 +114,9 @@ def download_image_by_name(filename):
     except TypeError:
         return {"mensagem": "Nome de arquivo inválido"}, 404
 
+#?<query_params>
+@app.get("/download-zip")
+def zip_download():
+
+    if request.args.get("extension"):
+        path = image.zip_images()
