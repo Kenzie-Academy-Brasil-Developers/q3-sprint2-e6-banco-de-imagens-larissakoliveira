@@ -19,34 +19,24 @@ if not os.path.isdir(files_directory):
             
 @app.post("/upload")
 def post_file(): 
-    files_list = []
-   
-
+    
     try:
         for file in request.files:
-            
             file_extension = request.files[file].filename.split('.')[-1].lower()
             filename = request.files[file].filename
             file_list = os.listdir(f'{files_directory}/{file_extension}')              
-            
-
-            if file_extension != 'png' and file_extension != 'jpg' and file_extension != 'gif':
-                return {"mensagem":"Extensão de imagem não suportada"}, 415
 
             if filename in file_list:
                 return {"mensagem":"Essa imagem já existe"}, 409
             
             if file_extension == 'jpg':
                 filename = image.save_image(request.files[file], file_extension)
-                files_list.append(filename)
 
             if file_extension == 'gif':
                 filename = image.save_image(request.files[file], file_extension)
-                files_list.append(filename)
 
             if file_extension == 'png':
                 filename = image.save_image(request.files[file], file_extension)
-                files_list.append(filename)
 
         return {"mensagem": "Sua imagem foi enviada com sucesso!"}, 201
 
@@ -56,48 +46,23 @@ def post_file():
     except FileNotFoundError:
                 return {"mensagem":"Extensão de imagem não suportada"}, 415
 
-    # except Conflict:
-    #     return {"mensagem":"Essa imagem já existe"}, 409
-
-    # except UnsupportedMediaType:
-    #     return {"mensagem":"Extensão de imagem não suportada"}, 415
-
 @app.get("/files")
 def get_files(): 
-    image_list = image.list_all('all')
-    return jsonify(image_list), 200
-
-# @app.get('/files/jpg')
-# def get_jpg(): 
-#     try:
-#         image_jpg_list = image.list_all('jpg')
-#         return jsonify(image_jpg_list), 200
-#     except NotFound:
-#         return {"mensagem":"extensão inválida"}, 404
-    
-# @app.get('/files/png')
-# def get_png(): 
-#     image_png_list = image.list_all('png')
-#     return jsonify(image_png_list), 200
-
-# @app.get('/files/gif')
-# def get_gif(): 
-#     image_gif_list = image.list_all('gif')
-#     return jsonify(image_gif_list), 200
-
+    image_list = image.get_files()
+    return image_list, 200
 
 @app.get('/files/<formato>')
 def get_list_specific_format(formato):
 
     try:
         if formato == 'jpg':
-            image_jpg_list = image.list_all('jpg')
+            image_jpg_list = image.list_by_extension('jpg')
             return jsonify(image_jpg_list), 200
         if formato == 'png':
-            image_png_list = image.list_all('png')
+            image_png_list = image.list_by_extension('png')
             return jsonify(image_png_list), 200
         if formato == 'gif':
-            image_gif_list = image.list_all('gif')
+            image_gif_list = image.list_by_extension('gif')
             return jsonify(image_gif_list), 200
     except NotFound:
         return {"mensagem": "Formato inválido"}, 404
@@ -114,9 +79,18 @@ def download_image_by_name(filename):
     except TypeError:
         return {"mensagem": "Nome de arquivo inválido"}, 404
 
-#?<query_params>
-@app.get("/download-zip")
-def zip_download():
 
-    if request.args.get("extension"):
-        path = image.zip_images()
+# @app.get("/download-zip")
+# def zip_download():
+
+#     path = f'/tmp/{filename}'
+#     compression_ratios = int(request.args.get('compression_ratio'))
+#     extension = request.args.get("extension")
+#     os.system(path comando???)
+#     os.system("zip {filename} {folder}")
+
+# GET /download-zip?<query_params> - Arquivo não existente - 404
+# Se o diretório do tipo de extensão passado por query_params estiver vazio, ou se o tipo de arquivo não existir, retornar uma mensagem de error e status code 404.
+
+# GET /download-zip?<query_params> - 200
+# Deverá fazer o download da extensão passada por query params em formato zip.

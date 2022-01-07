@@ -22,28 +22,21 @@ def save_image(file: FileStorage, file_extension: str):
 
     return filename
 
+def get_dir(item: str):
+
+    _, _, directories = list(os.walk(item))[0]
+    return directories
 
 def get_files():
     extension_folders = []
-    directory = os.walk(f'./{files_directory}')
 
-    for _,_,each in directory:
-        extension_folders.append(each)
-
-    return jsonify(
-        jpg=extension_folders[0],
-        gif=extension_folders[1],
-        png=extension_folders[2]
-    )
+    for item in allowed_extensions.split(','):
+        extension_folders = extension_folders + get_dir(f'{files_directory}/{item}')
+    
+    return jsonify(extension_folders)
 
 
 def list_by_extension(extension):
-
-    list_all_images = list()
-
-    # for extent in allowed_extensions:
-    #     final_dir = os.listdir(f'{files_directory}/{extent}
-    #     list_all_images.append(final_dir)
 
     files_list = os.listdir(f'{files_directory}/{extension}')
 
@@ -57,12 +50,11 @@ def list_by_extension(extension):
         return files_list
 
 
-
 def get_path(filename: str, extension: str):
     path = safe_join(files_directory,extension,filename)
 
     return path
 
 
-def zip_images():
-    ...
+# def zip_images():
+#     ...
