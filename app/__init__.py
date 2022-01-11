@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 import os 
 from werkzeug.exceptions import RequestEntityTooLarge, NotFound
+from werkzeug.utils import send_from_directory
 from .kenzie import image
 
 app = Flask(__name__)   
@@ -80,17 +81,8 @@ def download_image_by_name(filename):
         return {"mensagem": "Nome de arquivo inválido"}, 404
 
 
-# @app.get("/download-zip")
-# def zip_download():
-
-#     path = f'/tmp/{filename}'
-#     compression_ratios = int(request.args.get('compression_ratio'))
-#     extension = request.args.get("extension")
-#     os.system(path comando???)
-#     os.system("zip {filename} {folder}")
-
-# GET /download-zip?<query_params> - Arquivo não existente - 404
-# Se o diretório do tipo de extensão passado por query_params estiver vazio, ou se o tipo de arquivo não existir, retornar uma mensagem de error e status code 404.
-
-# GET /download-zip?<query_params> - 200
-# Deverá fazer o download da extensão passada por query params em formato zip.
+@app.get("/download-zip")
+def zip_download():
+    extension = request.args.get("extension")
+    compression_ratio = request.args.get("compression_ratio")
+  
