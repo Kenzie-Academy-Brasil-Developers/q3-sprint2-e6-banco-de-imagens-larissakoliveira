@@ -91,27 +91,7 @@ def download_image_by_name(filename):
 # def download_zip():
 #     query_params = request.args.get("file_extension")
 #     directory=f'{files_directory}/{query_params}'
-#     try:
-#         if os.listdir(directory) == []:
-#             return jsonify(message = "There are no files in the requestor directory"), 409    
-#         else:
-#             image.zip_image(query_params, directory)
-#             return jsonify(message = "Success"), 200   
-#     except:
-#         return jsonify(message="File does not exist"), 404
 
-# @app.get('/download-zip')
-# def download_zip():
-#     query_params = request.args.get("extension")
-#     directory = f'{files_directory}/{query_params}'
-#     try:
-#         if os.listdir(directory) == []:
-#             return jsonify("não há arquivos")
-#         else:
-#             files_list = image.zip_file(os.listdir(directory))
-#             return image.save_image(files_list, query_params), 200
-#     except:
-#         return 'erro', 400
 
 
 @app.get('/download-zip')

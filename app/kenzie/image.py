@@ -65,4 +65,3 @@ def get_path(filename: str, extension: str):
 #     with zipfile.ZipFile({file}, "w", compression=zipfile.ZIP_DEFLATED) as zip_image:
 #         zip_image.write({file})
 
-
