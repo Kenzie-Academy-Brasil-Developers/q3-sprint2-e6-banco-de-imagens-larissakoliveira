@@ -65,6 +65,9 @@ def get_list_specific_format(formato):
         if formato == 'gif':
             image_gif_list = image.list_by_extension('gif')
             return jsonify(image_gif_list), 200
+        
+        else:
+            raise NotFound
     except NotFound:
         return {"mensagem": "Formato inválido"}, 404
 
@@ -77,12 +80,52 @@ def download_image_by_name(filename):
         if extension == 'jpg' or extension == 'png' or extension == 'gif':
             path = image.get_path(filename, extension)
             return send_file(path, as_attachment=True), 200
-    except TypeError:
-        return {"mensagem": "Nome de arquivo inválido"}, 404
+        else:
+            raise FileNotFoundError
+ 
+    except FileNotFoundError:
+        return {"mensagem": "Arquivo não encontrado"}, 404
 
 
-@app.get("/download-zip")
-def zip_download():
-    extension = request.args.get("extension")
-    compression_ratio = request.args.get("compression_ratio")
-  
+# @app.get('/download-zip')
+# def download_zip():
+#     query_params = request.args.get("file_extension")
+#     directory=f'{files_directory}/{query_params}'
+#     try:
+#         if os.listdir(directory) == []:
+#             return jsonify(message = "There are no files in the requestor directory"), 409    
+#         else:
+#             image.zip_image(query_params, directory)
+#             return jsonify(message = "Success"), 200   
+#     except:
+#         return jsonify(message="File does not exist"), 404
+
+# @app.get('/download-zip')
+# def download_zip():
+#     query_params = request.args.get("extension")
+#     directory = f'{files_directory}/{query_params}'
+#     try:
+#         if os.listdir(directory) == []:
+#             return jsonify("não há arquivos")
+#         else:
+#             files_list = image.zip_file(os.listdir(directory))
+#             return image.save_image(files_list, query_params), 200
+#     except:
+#         return 'erro', 400
+
+
+@app.get('/download-zip')
+def downloadZip():
+    file_extension = request.args.get('file_extension')
+    compression_rate = request.args.get('compression_rate')
+
+    if (int(compression_rate) < 6 or int(compression_rate) == False):
+        compression_rate = 6
+
+    os.system(f'zip -r zip/{file_extension}.zip {files_directory}/{file_extension} * -{compression_rate}')
+
+    return send_from_directory(
+        directory="./zip", 
+        path=f'{file_extension}.zip', 
+        as_attachment=True
+    ), 200

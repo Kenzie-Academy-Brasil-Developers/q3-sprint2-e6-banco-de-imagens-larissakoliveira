@@ -3,6 +3,8 @@ from flask import Flask, jsonify
 from flask.helpers import safe_join
 from werkzeug.datastructures import FileStorage
 from os import getenv
+import shutil
+import zipfile
 
 files_directory = getenv('FILES_DIRECTORY')
 allowed_extensions = getenv('ALLOWED_EXTENSIONS')
@@ -56,5 +58,11 @@ def get_path(filename: str, extension: str):
     return path
 
 
-# def zip_images():
-#     ...
+# def zip_image(query_params, directory):
+#     return shutil.make_archive(f"/tmp/{query_params}", 'zip', directory) 
+
+# def zip_file(file):
+#     with zipfile.ZipFile({file}, "w", compression=zipfile.ZIP_DEFLATED) as zip_image:
+#         zip_image.write({file})
+
+
