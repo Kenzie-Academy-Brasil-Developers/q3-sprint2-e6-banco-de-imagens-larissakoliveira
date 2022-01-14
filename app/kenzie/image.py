@@ -1,10 +1,9 @@
 import os
-from flask import Flask, jsonify
+from flask import jsonify, send_file
 from flask.helpers import safe_join
 from werkzeug.datastructures import FileStorage
 from os import getenv
-import shutil
-import zipfile
+
 
 files_directory = getenv('FILES_DIRECTORY')
 allowed_extensions = getenv('ALLOWED_EXTENSIONS')
@@ -58,10 +57,16 @@ def get_path(filename: str, extension: str):
     return path
 
 
-# def zip_image(query_params, directory):
-#     return shutil.make_archive(f"/tmp/{query_params}", 'zip', directory) 
+def zip_file(file_extension: str, compression_ratio: str):
+    output_file = f'{file_extension}.zip'
+    input_path = os.path.join(files_directory, file_extension)
+    output_path_file = os.path.join('/tmp', output_file)
 
-# def zip_file(file):
-#     with zipfile.ZipFile({file}, "w", compression=zipfile.ZIP_DEFLATED) as zip_image:
-#         zip_image.write({file})
+    command = f'zip -j -r -{compression_ratio} {output_path_file} {input_path}'
 
+    if os.path.isfile(output_path_file):
+        os.remove(output_path_file)
+
+    os.system(command)
+
+    return send_file(output_path_file, as_attachment=True)

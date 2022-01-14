@@ -24,6 +24,9 @@ def post_file():
     try:
         for file in request.files:
             file_extension = request.files[file].filename.split('.')[-1].lower()
+            #poderia ser feito também da seguinte maneira:
+            #_, extension = os.path.splitext(file.filename)
+            #extension = extension.replace(".", "")
             filename = request.files[file].filename
             file_list = os.listdir(f'{files_directory}/{file_extension}')              
 
@@ -87,25 +90,15 @@ def download_image_by_name(filename):
         return {"mensagem": "Arquivo não encontrado"}, 404
 
 
-# @app.get('/download-zip')
-# def download_zip():
-#     query_params = request.args.get("file_extension")
-#     directory=f'{files_directory}/{query_params}'
-
-
-
 @app.get('/download-zip')
 def downloadZip():
     file_extension = request.args.get('file_extension')
-    compression_rate = request.args.get('compression_rate')
+    compression_ratio = request.args.get('compression_ratio', 6)
 
-    if (int(compression_rate) < 6 or int(compression_rate) == False):
-        compression_rate = 6
+    if not file_extension:
+        return {"msg": "Query param 'file_extension' é obrigatório"}, 400
 
-    os.system(f'zip -r zip/{file_extension}.zip {files_directory}/{file_extension} * -{compression_rate}')
+    if not os.listdir(f'{files_directory}/{file_extension}'):
+        return {"msg": "Não existe imagem a ser zipada"}, 404
 
-    return send_from_directory(
-        directory="./zip", 
-        path=f'{file_extension}.zip', 
-        as_attachment=True
-    ), 200
+    return image.zip_file(file_extension, compression_ratio), 200
